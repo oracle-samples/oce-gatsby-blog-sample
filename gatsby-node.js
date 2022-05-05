@@ -61,6 +61,7 @@ exports.createPages = ({ graphql, actions }) => {
         component: articlesListTemplate,
         context: {
           topicId,
+          buildTag: process.env.BUILD_TAG,
         },
       }); // end createpage for topic
     });
@@ -75,6 +76,7 @@ exports.createPages = ({ graphql, actions }) => {
         component: articleDetailsTemplate,
         context: {
           articleId,
+          buildTag: process.env.BUILD_TAG,
         },
       });
     });

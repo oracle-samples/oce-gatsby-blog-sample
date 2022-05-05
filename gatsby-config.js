@@ -38,9 +38,17 @@ module.exports = {
         //  Used when staticAssetDownload is true
         staticAssetRootDir: 'contentServer',
         staticUrlPrefix: process.env.PATH_PREFIX,
+        authStr: process.env.AUTH,
+        oAuthSettings: {
+          clientId: process.env.CLIENT_ID,
+          clientSecret: process.env.CLIENT_SECRET,
+          clientScopeUrl: process.env.CLIENT_SCOPE_URL,
+          idpUrl: process.env.IDP_URL,
+        },
+        preview: process.env.PREVIEW,
         debug: false,
       },
     },
-    'gatsby-plugin-offline',
+    'gatsby-plugin-react-helmet',
   ],
 };

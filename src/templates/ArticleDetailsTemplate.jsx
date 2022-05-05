@@ -1,11 +1,16 @@
-/* eslint-disable camelcase */
-
 /**
  * Copyright (c) 2021 Oracle and/or its affiliates.
  * Licensed under the Universal Permissive License v 1.0 as shown at https://oss.oracle.com/licenses/upl.
  */
 
+/* eslint-disable camelcase */
+/* eslint-disable import/no-absolute-path */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable global-require */
+/* eslint-disable react/prop-types */
+
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { graphql } from 'gatsby';
 import PropTypes from 'prop-types';
 import filterXSS from 'xss';
@@ -38,7 +43,7 @@ export const query = graphql`query ($articleId: String!) {
       }
     }
   }
-  oceToFileQuery: allOceAsset {
+  oceToFileQuery: allOceAsset(filter: {staticURL: {ne: null}}) {
     nodes {
       oceId    
       staticURL  
@@ -50,7 +55,7 @@ export const query = graphql`query ($articleId: String!) {
 /**
  * Template for the Article Details Page.
  */
-const ArticlesDetailsTemplate = ({ data }) => {
+const ArticlesDetailsTemplate = ({ pageContext: { buildTag }, data }) => {
   const article = data.topLevelQuery.nodes[0];
   const oceToFile = data.oceToFileQuery.nodes;
   const {
@@ -97,8 +102,18 @@ const ArticlesDetailsTemplate = ({ data }) => {
   // to filter out its content
   };
   const content = filterXSS(article_content, options);
+
+  const BUILD_TAG = buildTag || 'none';
+  const sdkPackage = require('/node_modules/@oracle/gatsby-source-oce/package.json');
+  const SDK_VERSION = sdkPackage.version;
+
   return (
     <div>
+      <Helmet>
+        <meta name="description" content="Sample Blog app created in Gatsby that uses Oracle Content Management" />
+        <meta name="BUILD_TAG" content={`${BUILD_TAG}`} />
+        <meta name="@oracle/gatsby-source-oce" content={`${SDK_VERSION}`} />
+      </Helmet>
       <Breadcrumbs breadcrumbsData={breadcrumbsData} />
       <div id="article">
         <div className="author">

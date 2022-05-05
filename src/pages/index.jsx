@@ -4,7 +4,12 @@
  */
 
 /* eslint-disable camelcase */
+/* eslint-disable import/no-absolute-path */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable global-require */
+
 import React from 'react';
+import { Helmet } from 'react-helmet';
 import { graphql, useStaticQuery } from 'gatsby';
 
 import Header from '../components/Header';
@@ -37,7 +42,7 @@ export const query = graphql`{
       }
     }
   }
-  oceToFileQuery: allOceAsset {
+  oceToFileQuery: allOceAsset(filter: {staticURL: {ne: null}}) {
     nodes {
       oceId
       staticURL      
@@ -59,8 +64,16 @@ const IndexPage = () => {
     company_logo.id,
   );
   const { topics } = toplevel;
+  const BUILD_TAG = process.env.GATSBY_BUILD_TAG || 'none';
+  const sdkPackage = require('/node_modules/@oracle/gatsby-source-oce/package.json');
+  const SDK_VERSION = sdkPackage.version;
   return (
     <div data-testid="TopicsListContainer">
+      <Helmet>
+        <meta name="description" content="Sample Blog app created in Gatsby that uses Oracle Content Management" />
+        <meta name="BUILD_TAG" content={`${BUILD_TAG}`} />
+        <meta name="@oracle/gatsby-source-oce" content={`${SDK_VERSION}`} />
+      </Helmet>
       <Header
         companyTitle={toplevel.company_name}
         companyLogoImageObj={companyLogoImageObj}
